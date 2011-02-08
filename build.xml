@@ -183,19 +183,18 @@
 
 		<junit printsummary="yes" showoutput="yes">
 			<sysproperty key="log.home" value="${logs}" />
-			<sysproperty key="idx.dir" value="data/cardata" />
-			<sysproperty key="uididx.dir" value="data/uiddata" />
-                        <sysproperty key="log4j.configuration" value="resources/log4j.properties" />
+			<sysproperty key="idx.dir" value="data/carindex" />
+      <sysproperty key="log4j.configuration" value="resources/log4j.properties" />
 
 			<jvmarg value="-server" />
 			<jvmarg value="-Xms256m" />
 			<jvmarg value="-Xmx1g" />
-			<!-- debug 
+			<!-- debug -->
 			<jvmarg value="-Djava.compiler=NONE" />
 			<jvmarg value="-Xdebug" />
 			<jvmarg value="-Xnoagent" />
-			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=7777,server=y,suspend=y" />
-			-->
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=7777,server=y,suspend=n" />
+			<!-- -->
 
 			<!-- classpath must include all jar dependencies and classes -->
 			<classpath refid="test.class.path" />

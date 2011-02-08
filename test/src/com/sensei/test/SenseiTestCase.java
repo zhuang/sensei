@@ -30,8 +30,7 @@ import com.sensei.search.req.SenseiResult;
 
 public class SenseiTestCase extends AbstractSenseiTestCase
 {
-  // static File IdxDir = new File(System.getProperty("idx.dir"));
-  static File IdxDir = new File("data/cardata");
+  static File IdxDir = new File(System.getProperty("idx.dir"));
   static final String SENSEI_TEST_CLUSTER_NAME = "testCluster";
   private static final Logger logger = Logger.getLogger(SenseiTestCase.class);
 
@@ -141,6 +140,7 @@ public class SenseiTestCase extends AbstractSenseiTestCase
     req.setFacetSpec("price", spec);
     req.setFacetSpec("mileage", spec);
     req.setFacetSpec("tags", spec);
+    req.setFacetSpec("uid", spec);
   }
 
   public void testTotalCount() throws Exception
@@ -218,6 +218,35 @@ public class SenseiTestCase extends AbstractSenseiTestCase
     logger.info("request:" + req + "\nresult:" + res);
     assertEquals(res.getTotalDocs() - 3 * 2907, res.getNumHits());
     verifyFacetCount(res, "year", "[1993 TO 1994]", 9270);
+  }
+
+  public void testUID() throws Exception
+  {
+    logger.info("executing test case testUID");
+
+    FacetSpec facetSpecall = new FacetSpec();
+    facetSpecall.setMaxCount(1000000);
+    facetSpecall.setExpandSelection(true);
+    facetSpecall.setMinHitCount(0);
+    facetSpecall.setOrderBy(FacetSortSpec.OrderHitsDesc);
+    facetSpecall.setMaxCount(3);
+
+    SenseiRequest req = new SenseiRequest();
+    req.setCount(3);
+    setspec(req, facetSpecall);
+
+    String selName = "uid";
+    String selVal = "[1001 TO 6000]";
+    BrowseSelection sel = new BrowseSelection(selName);
+    sel.addValue(selVal);
+    req.addSelection(sel);
+    SenseiResult res = broker.browse(req);
+
+    logger.info("request:" + req + "\nresult:" + res);
+
+    int expectedHits = 5000 * 3;
+    assertEquals(expectedHits, res.getNumHits());
+    verifyFacetCount(res, selName, selVal, expectedHits);
   }
 
   /**

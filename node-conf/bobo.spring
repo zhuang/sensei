@@ -80,6 +80,23 @@
 		<constructor-arg value="tags" />
 	</bean>
 	
+  <bean id="uid" class="com.browseengine.bobo.facets.impl.RangeFacetHandler">
+          <constructor-arg value="uid" />
+          <constructor-arg>
+                  <bean class="com.browseengine.bobo.facets.data.PredefinedTermListFactory">
+                          <constructor-arg value="java.lang.Long" />
+                          <constructor-arg value="00000000000000000000" />
+                  </bean>
+          </constructor-arg>
+          <constructor-arg>
+               <list>
+                  <value>[* TO 5000]</value>
+                  <value>[5001 TO 10000]</value>
+                  <value>[10001 TO *]</value>
+               </list>
+          </constructor-arg>
+  </bean>
+
 	<bean id="handlers" class="java.util.ArrayList">
 		<constructor-arg>
 			<list>
@@ -91,6 +108,7 @@
 				<ref bean="price" />
 				<ref bean="mileage" />
 				<ref bean="tags" />
+				<ref bean="uid" />
 			</list>
 		</constructor-arg>
 	</bean>

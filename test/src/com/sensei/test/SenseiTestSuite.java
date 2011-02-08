@@ -11,8 +11,6 @@ public class SenseiTestSuite extends TestSuite{
      suite.addTestSuite(SenseiTestSerialization.class);
      suite.addTestSuite(SenseiIndexingAPITest.class);
      suite.addTestSuite(SenseiRestServerTest.class);
-//     suite.addTestSuite(SenseiTestUIDFacetHandler.class);
-     suite.addTestSuite(SenseiTestUIDFacetHandlerUsingBoboZoie.class);
      return suite;
   }
  
