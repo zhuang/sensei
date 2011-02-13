@@ -140,7 +140,7 @@ public class SenseiTestCase extends AbstractSenseiTestCase
     req.setFacetSpec("price", spec);
     req.setFacetSpec("mileage", spec);
     req.setFacetSpec("tags", spec);
-    req.setFacetSpec("uid", spec);
+    req.setFacetSpec("_ID", spec);
   }
 
   public void testTotalCount() throws Exception
@@ -235,18 +235,15 @@ public class SenseiTestCase extends AbstractSenseiTestCase
     req.setCount(3);
     setspec(req, facetSpecall);
 
-    String selName = "uid";
-    String selVal = "[1001 TO 6000]";
+    String selName = "_ID";
     BrowseSelection sel = new BrowseSelection(selName);
-    sel.addValue(selVal);
     req.addSelection(sel);
     SenseiResult res = broker.browse(req);
 
     logger.info("request:" + req + "\nresult:" + res);
 
-    int expectedHits = 5000 * 3;
+    int expectedHits = 15000 * 3;
     assertEquals(expectedHits, res.getNumHits());
-    verifyFacetCount(res, selName, selVal, expectedHits);
   }
 
   /**
@@ -262,8 +259,8 @@ public class SenseiTestCase extends AbstractSenseiTestCase
    */
   private void verifyFacetCount(SenseiResult res, String selName, String selVal, int count)
   {
-    FacetAccessible year = res.getFacetAccessor(selName);
-    List<BrowseFacet> browsefacets = year.getFacets();
+    FacetAccessible sel = res.getFacetAccessor(selName);
+    List<BrowseFacet> browsefacets = sel.getFacets();
     int index = indexOfFacet(selVal, browsefacets);
     if (count>0)
     {
