@@ -13,6 +13,7 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.util.Version;
 
 import com.browseengine.bobo.api.BrowseFacet;
+import com.browseengine.bobo.api.BrowseHit;
 import com.browseengine.bobo.api.BrowseSelection;
 import com.browseengine.bobo.api.FacetAccessible;
 import com.browseengine.bobo.api.FacetSpec;
@@ -140,7 +141,6 @@ public class SenseiTestCase extends AbstractSenseiTestCase
     req.setFacetSpec("price", spec);
     req.setFacetSpec("mileage", spec);
     req.setFacetSpec("tags", spec);
-    req.setFacetSpec("_ID", spec);
   }
 
   public void testTotalCount() throws Exception
@@ -224,26 +224,32 @@ public class SenseiTestCase extends AbstractSenseiTestCase
   {
     logger.info("executing test case testUID");
 
-    FacetSpec facetSpecall = new FacetSpec();
-    facetSpecall.setMaxCount(1000000);
-    facetSpecall.setExpandSelection(true);
-    facetSpecall.setMinHitCount(0);
-    facetSpecall.setOrderBy(FacetSortSpec.OrderHitsDesc);
-    facetSpecall.setMaxCount(3);
-
     SenseiRequest req = new SenseiRequest();
-    req.setCount(3);
-    setspec(req, facetSpecall);
+    req.setCount(6);
 
-    String selName = "_ID";
-    BrowseSelection sel = new BrowseSelection(selName);
+    BrowseSelection sel = new BrowseSelection("uid");
+    String selVal = "00000000000000000006";
+    sel.addValue(selVal);
     req.addSelection(sel);
-    SenseiResult res = broker.browse(req);
-
-    logger.info("request:" + req + "\nresult:" + res);
-
-    int expectedHits = 15000 * 3;
-    assertEquals(expectedHits, res.getNumHits());
+    
+    try
+    {
+      SenseiResult res = broker.browse(req);
+      BrowseHit[] hits = res.getHits();
+      
+      for(int i = 0; i < hits.length; i ++)
+      {
+        String[] vals = hits[i].getFields("uid");
+        
+        assertEquals("6", vals[0]);
+        int did = hits[i].getDocid();
+        assertEquals(true, (did == 6 || did == 15006 || did == 30006));
+      }
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+    }
   }
 
   /**
